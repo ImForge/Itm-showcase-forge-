@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-base: #0e0e10;
+  --bg-surface: #141416;
+  --bg-elevated: #1c1c1f;
+  --bg-overlay: #242428;
+  --border: #2a2a2e;
+  --border-subtle: #1f1f23;
+  --text-primary: #f0f0f2;
+  --text-secondary: #8b8b99;
+  --text-muted: #4a4a55;
+  --accent: #f59e0b;
+  --accent-hover: #fbbf24;
+  --accent-dim: #f59e0b18;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Geist', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg-base);
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+::selection { background: var(--accent-dim); color: var(--accent-hover); }
