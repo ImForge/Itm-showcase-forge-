@@ -122,7 +122,7 @@ Full Row Level Security (RLS) policies on all tables.
 - [x] Admin panel
 - [ ] Mobile responsiveness
 - [ ] Markdown rendering for project descriptions
-- [ ] Global search (Cmd+K)
+- [x] Global search (Cmd+K)
 - [ ] Email notifications
 - [ ] GitHub auto-import
 - [ ] Build-on graph visualization
