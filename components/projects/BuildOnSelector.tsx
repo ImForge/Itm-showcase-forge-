@@ -24,28 +24,26 @@ export default function BuildOnSelector({ selectedId, onSelect }: Props) {
   const [focused, setFocused] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (query.trim().length < 2) { setResults([]); return }
+ useEffect(() => {
+  if (query.trim().length < 2) { setResults([]); return }
 
-    const timer = setTimeout(async () => {
-      setSearching(true)
-      const { data } = await supabase
-        .from('projects')
-        .select('id, title, description, profiles(username)')
-        .eq('status', 'approved')
-        .ilike('title', `%${query}%`)
-        .limit(6)
+  const timer = setTimeout(async () => {
+    setSearching(true)
+    const { data } = await supabase
+      .from('projects')
+      .select('id, title, description, profiles!projects_submitted_by_fkey(username)')
+      .eq('status', 'approved')
+      .ilike('title', `%${query}%`)
+      .limit(6)
 
-      // Cast through unknown — Supabase returns a complex generated type
-      // that doesn't match our simple SearchResult shape, but the data is correct
-      const safe = (data ?? []) as unknown as SearchResult[]
-      setResults(safe)
-      setSearching(false)
-      setOpen(true)
-    }, 300)
+    const safe = (data ?? []) as unknown as SearchResult[]
+    setResults(safe)
+    setSearching(false)
+    setOpen(true)
+  }, 300)
 
-    return () => clearTimeout(timer)
-  }, [query])
+  return () => clearTimeout(timer)
+}, [query])
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
