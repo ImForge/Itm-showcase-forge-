@@ -2,7 +2,6 @@
 
 A web platform for university students to submit, discover, and build on top of each other's projects — permanently, with full credit.
 
-Built as part of the BCA CTIS curriculum at **ITM University Raipur**, guided by **Mr. Amar Sinha** (Assistant Professor).
 
 ---
 
