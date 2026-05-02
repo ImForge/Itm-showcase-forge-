@@ -1,10 +1,11 @@
 // app/(main)/layout.tsx
-// Added SearchModal here so it's mounted on every (main) page.
-// Cmd+K works from anywhere — home, projects, teams, assignments.
+// Server Component — fetches auth + invitations, passes to SidebarClient.
+// Uses MainContent (client) to handle mobile padding offset.
 
 import { createClient } from '@/lib/supabase/server'
 import SidebarClient from '@/components/layout/sidebarclient'
 import SearchModal from '@/components/search/SearchModel'
+import MainContent from '@/components/layout/Maincontent'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,12 +35,11 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', minHeight: '100vh', background: 'var(--bg-base)' }}>
+    <div style={{ display: 'flex', flexDirection: 'row', minHeight: '100vh', background: '#0e0e10' }}>
       <SidebarClient user={user} profile={profile} pendingInvitations={pendingInvitations} />
-      <main style={{ flex: 1, minWidth: 0, overflowY: 'auto', background: 'var(--bg-base)' }}>
+      <MainContent>
         {children}
-      </main>
-      {/* SearchModal is always mounted but invisible until Cmd+K */}
+      </MainContent>
       <SearchModal />
     </div>
   )
