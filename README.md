@@ -120,7 +120,7 @@ Full Row Level Security (RLS) policies on all tables.
 - [x] Stars, Saves, Reports
 - [x] Profile & Settings
 - [x] Admin panel
-- [ ] Mobile responsiveness
+- [x] Mobile responsiveness
 - [ ] Markdown rendering for project descriptions
 - [x] Global search (Cmd+K)
 - [ ] Email notifications
