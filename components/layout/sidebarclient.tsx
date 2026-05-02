@@ -105,25 +105,17 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
   const [workspaceOpen, setWorkspaceOpen] = useState(false)
   const [myTeams, setMyTeams] = useState<Team[]>([])
   const [mobileOpen, setMobileOpen] = useState(false)
-
-  // isMobile: true = show hamburger bar, false = show sidebar
-  // Start as null so we don't render either until we know the screen size
   const [isMobile, setIsMobile] = useState<boolean | null>(null)
 
-  // Detect screen width using JS — runs only on client, 100% reliable
   useEffect(() => {
-    function check() {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    check() // run once immediately on mount
+    function check() { setIsMobile(window.innerWidth <= 768) }
+    check()
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  // Close drawer when route changes
   useEffect(() => { setMobileOpen(false) }, [pathname])
 
-  // Lock body scroll when mobile drawer is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -162,14 +154,8 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
   const workspaceLabel = activeTeam?.name ?? profile?.full_name ?? profile?.username ?? 'My Workspace'
   const workspaceSubLabel = activeTeam ? 'Team workspace' : 'Personal workspace'
 
-  // While we haven't measured the screen yet, render nothing
-  // This prevents a flash of wrong layout on first load
   if (isMobile === null) return null
 
-  // ── THE SIDEBAR PANEL ──
-  // This exact same JSX is used in two places:
-  // 1. Desktop: rendered directly in the flex row
-  // 2. Mobile: rendered inside a sliding drawer
   const SidebarPanel = (
     <aside style={{
       width: '220px',
@@ -191,7 +177,6 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
         justifyContent: 'space-between',
         borderBottom: '1px solid #1f1f23',
       }}>
-        {/* Logo + name */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <img
             src="/forge-logo.png"
@@ -208,7 +193,6 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
           </span>
         </div>
 
-        {/* Right icons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
           {user && (
             <>
@@ -240,7 +224,6 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
               </button>
             </>
           )}
-          {/* X close button — only shown in mobile drawer */}
           {isMobile && (
             <button
               onClick={() => setMobileOpen(false)}
@@ -362,8 +345,43 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
         })}
       </nav>
 
-      {/* ── BOTTOM: logout / login ── */}
+      {/* ── BOTTOM ── */}
       <div style={{ padding: '8px 10px', borderTop: '1px solid #1f1f23', display: 'flex', flexDirection: 'column', gap: '1px' }}>
+
+        {/* Documentation link — always visible */}
+        <a
+          href="/docs"
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#f0f0f2' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#4a4a55' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '9px',
+            padding: '6px 8px',
+            borderRadius: '7px',
+            textDecoration: 'none',
+            fontSize: '13px',
+            fontWeight: 400,
+            color: isActive('/docs') ? '#f0f0f2' : '#4a4a55',
+            background: isActive('/docs') ? 'rgba(255,255,255,0.06)' : 'transparent',
+            transition: 'background 0.1s, color 0.1s',
+            marginBottom: '4px',
+          }}
+        >
+          <span style={{ display: 'flex', opacity: 0.6 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </span>
+          About Forge
+        </a>
+
+        {/* Divider */}
+        <div style={{ height: '1px', background: '#1f1f23', margin: '2px 0 4px' }} />
+
+        {/* Login / logout */}
         {user ? (
           <SidebarBtn
             icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>}
@@ -390,8 +408,6 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
     </aside>
   )
 
-  // ── DESKTOP LAYOUT ──
-  // Sidebar sits directly in the flex row, always visible
   if (!isMobile) {
     return (
       <div style={{ position: 'sticky', top: 0, height: '100vh', flexShrink: 0, zIndex: 50 }}>
@@ -400,16 +416,12 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
     )
   }
 
-  // ── MOBILE LAYOUT ──
-  // Fixed top bar with hamburger + sliding drawer from left
   return (
     <>
       {/* Fixed top bar */}
       <div style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
+        top: 0, left: 0, right: 0,
         height: '52px',
         background: '#141416',
         borderBottom: '1px solid #1f1f23',
@@ -419,12 +431,8 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
         padding: '0 16px',
         zIndex: 98,
       }}>
-        {/* Left: hamburger + logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={() => setMobileOpen(o => !o)}
-            style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#8b8b99', padding: '4px', display: 'flex', alignItems: 'center' }}
-          >
+          <button onClick={() => setMobileOpen(o => !o)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#8b8b99', padding: '4px', display: 'flex', alignItems: 'center' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <line x1="3" y1="6" x2="21" y2="6"/>
               <line x1="3" y1="12" x2="21" y2="12"/>
@@ -436,53 +444,33 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
             <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#f0f0f2' }}>Forge</span>
           </div>
         </div>
-
-        {/* Right: search + bell */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <button
-            onClick={openSearch}
-            style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#4a4a55', padding: '6px', display: 'flex', alignItems: 'center' }}
-          >
+          <button onClick={openSearch} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#4a4a55', padding: '6px', display: 'flex', alignItems: 'center' }}>
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
           </button>
           {user && (
-            <button
-              onClick={() => router.push('/teams?tab=invitations')}
-              style={{ position: 'relative', background: 'transparent', border: 'none', cursor: 'pointer', color: pendingInvitations > 0 ? '#f59e0b' : '#4a4a55', padding: '6px', display: 'flex', alignItems: 'center' }}
-            >
+            <button onClick={() => router.push('/teams?tab=invitations')} style={{ position: 'relative', background: 'transparent', border: 'none', cursor: 'pointer', color: pendingInvitations > 0 ? '#f59e0b' : '#4a4a55', padding: '6px', display: 'flex', alignItems: 'center' }}>
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                 <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
               </svg>
-              {pendingInvitations > 0 && (
-                <span style={{ position: 'absolute', top: '3px', right: '3px', width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444', border: '1.5px solid #141416' }} />
-              )}
+              {pendingInvitations > 0 && <span style={{ position: 'absolute', top: '3px', right: '3px', width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444', border: '1.5px solid #141416' }} />}
             </button>
           )}
         </div>
       </div>
 
-      {/* Dark overlay behind drawer — tap to close */}
+      {/* Overlay */}
       {mobileOpen && (
-        <div
-          onClick={() => setMobileOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.65)',
-            zIndex: 99,
-            backdropFilter: 'blur(2px)',
-          }}
-        />
+        <div onClick={() => setMobileOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 99, backdropFilter: 'blur(2px)' }} />
       )}
 
-      {/* Sliding drawer */}
+      {/* Drawer */}
       <div style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
+        top: 0, left: 0,
         height: '100vh',
         zIndex: 100,
         transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
@@ -495,61 +483,24 @@ export default function SidebarClient({ user, profile, pendingInvitations = 0 }:
   )
 }
 
-// ── DROPDOWN ITEM ──
-function DropdownItem({
-  label, sublabel, active, onClick,
-}: {
-  label: string
-  sublabel?: string
-  active?: boolean
-  onClick: () => void
-}) {
+function DropdownItem({ label, sublabel, active, onClick }: { label: string; sublabel?: string; active?: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
       onMouseEnter={e => { if (!active) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
       onMouseLeave={e => { if (!active) e.currentTarget.style.background = active ? 'rgba(245,158,11,0.06)' : 'transparent' }}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '8px',
-        padding: '7px 12px',
-        width: '100%',
-        background: active ? 'rgba(245,158,11,0.06)' : 'transparent',
-        border: 'none',
-        cursor: 'pointer',
-        textAlign: 'left',
-        transition: 'background 0.1s',
-      }}
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '7px 12px', width: '100%', background: active ? 'rgba(245,158,11,0.06)' : 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'background 0.1s' }}
     >
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: '12.5px', fontWeight: 500, color: active ? '#f59e0b' : '#f0f0f2', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {label}
-        </div>
-        {sublabel && (
-          <div style={{ fontSize: '10.5px', color: '#4a4a55', marginTop: '1px' }}>{sublabel}</div>
-        )}
+        <div style={{ fontSize: '12.5px', fontWeight: 500, color: active ? '#f59e0b' : '#f0f0f2', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</div>
+        {sublabel && <div style={{ fontSize: '10.5px', color: '#4a4a55', marginTop: '1px' }}>{sublabel}</div>}
       </div>
-      {active && (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      )}
+      {active && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
     </button>
   )
 }
 
-// ── SIDEBAR BUTTON ──
-function SidebarBtn({
-  icon, label, onClick, danger, accent,
-}: {
-  icon: React.ReactNode
-  label: string
-  onClick: () => void
-  danger?: boolean
-  accent?: boolean
-}) {
+function SidebarBtn({ icon, label, onClick, danger, accent }: { icon: React.ReactNode; label: string; onClick: () => void; danger?: boolean; accent?: boolean }) {
   return (
     <button
       onClick={onClick}
@@ -561,22 +512,7 @@ function SidebarBtn({
         e.currentTarget.style.background = accent ? 'rgba(245,158,11,0.08)' : 'transparent'
         e.currentTarget.style.color = accent ? '#f59e0b' : '#8b8b99'
       }}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '9px',
-        padding: '6px 8px',
-        borderRadius: '7px',
-        background: accent ? 'rgba(245,158,11,0.08)' : 'transparent',
-        border: 'none',
-        cursor: 'pointer',
-        fontSize: '13px',
-        fontWeight: 400,
-        color: accent ? '#f59e0b' : '#8b8b99',
-        width: '100%',
-        textAlign: 'left',
-        transition: 'background 0.1s, color 0.1s',
-      }}
+      style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '6px 8px', borderRadius: '7px', background: accent ? 'rgba(245,158,11,0.08)' : 'transparent', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: 400, color: accent ? '#f59e0b' : '#8b8b99', width: '100%', textAlign: 'left', transition: 'background 0.1s, color 0.1s' }}
     >
       <span style={{ display: 'flex', opacity: 0.8 }}>{icon}</span>
       {label}
