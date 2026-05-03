@@ -422,15 +422,16 @@ export default function AssignmentsPage() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {displayList.map(a => (
-            <div key={a.id} style={{
-              display: 'flex', alignItems: 'center', gap: '14px',
-              padding: '14px 18px',
-              background: 'var(--bg-surface)', border: '1px solid var(--border)',
-              borderRadius: '11px', transition: 'border-color 0.15s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = '#f59e0b50')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
-            >
+  <a key={a.id} href={`/assignments/${a.id}`} style={{
+    display: 'flex', alignItems: 'center', gap: '14px',
+    padding: '14px 18px',
+    background: 'var(--bg-surface)', border: '1px solid var(--border)',
+    borderRadius: '11px', transition: 'border-color 0.15s',
+    textDecoration: 'none', cursor: 'pointer',
+  }}
+    onMouseEnter={e => (e.currentTarget.style.borderColor = '#f59e0b50')}
+    onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
+  >
               {/* Icon */}
               <div style={{
                 width: '40px', height: '40px', borderRadius: '10px',
@@ -528,7 +529,7 @@ export default function AssignmentsPage() {
                   </>
                 )}
               </div>
-            </div>
+            </a>
           ))}
         </div>
       )}
